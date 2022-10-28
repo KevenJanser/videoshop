@@ -109,10 +109,8 @@ class OrderController {
 		}
 	}
 
-	@GetMapping("/cart")
-	String basket() {
-		return "cart";
-	}
+	
+	
 
 	/**
 	 * Checks out the current state of the {@link Cart}. Using a method parameter of type {@code Optional<UserAccount>}
@@ -122,6 +120,10 @@ class OrderController {
 	 * @param userAccount will never be {@literal null}.
 	 * @return the view name.
 	 */
+	@GetMapping("/cart")
+    String basket() {
+        return "cart";
+    }
 	@PostMapping("/checkout")
 	String buy(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount) {
 
@@ -137,12 +139,36 @@ class OrderController {
 			orderManagement.payOrder(order);
 			orderManagement.completeOrder(order);
 
+			 
+
 			cart.clear();
 
 			return "redirect:/";
 		}).orElse("redirect:/cart");
 	}
+	
 
+    @PostMapping("/clear")
+	String clear(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount) {
+
+		 
+
+			cart.clear();
+
+			return "redirect:/cart";
+		}
+		/*@PostMapping("/delete")
+		String delete(@ModelAttribute Cart cart, @LoggedIn Optional<UserAccount> userAccount) {
+	
+			public Optional<CartItem> removeItem(String identifier) {
+				Assert.notNull(identifier, "CartItem identifier must not be null!");
+				return getItem(identifier) //
+					.map(item -> items.remove(item.getProduct()));}
+	
+	
+				return "redirect:/cart";
+			}
+         */
 	@GetMapping("/orders")
 	@PreAuthorize("hasRole('BOSS')")
 	String orders(Model model) {
